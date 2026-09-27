@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sudiksha & Vaibhav Wedding</title>
+  <style>
+    :root {
+      --bg-color: #F5F3EF;
+      --card-bg: #FFFFFF;
+      --primary: #2C4A3E;
+      --gold: #C5A059;
+      --text: #333333;
+      --text-muted: #666666;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text); line-height: 1.6; text-align: center; }
+
+    nav { position: sticky; top: 0; background: var(--primary); padding: 12px 10px; display: flex; justify-content: center; gap: 15px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    nav a { color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+
+    .header { padding: 50px 20px 30px; background: #EFECE6; border-bottom: 1px solid #E0DCD3; }
+    .monogram { font-family: Georgia, serif; font-size: 36px; color: var(--gold); letter-spacing: 3px; margin-bottom: 5px; }
+    .names { font-family: Georgia, serif; font-size: 28px; color: var(--primary); font-weight: normal; margin-bottom: 5px; }
+    .hashtag { font-size: 14px; color: var(--gold); letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+
+    .container { max-width: 600px; margin: auto; padding: 25px 15px; }
+    .card { background: var(--card-bg); border-radius: 16px; padding: 28px 20px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #ECE7DE; }
+    h2 { font-family: Georgia, serif; font-size: 22px; color: var(--primary); margin-bottom: 12px; }
+    p { font-size: 15px; color: var(--text-muted); }
+
+    .event { padding: 15px 0; border-bottom: 1px dashed #E0E0E0; }
+    .event:last-child { border-bottom: none; }
+    .event-title { font-family: Georgia, serif; font-style: italic; font-size: 20px; color: var(--gold); margin-bottom: 4px; }
+    .event-details { font-size: 14px; color: var(--text); font-weight: 500; }
+
+    .btn { display: inline-block; background: var(--primary); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 15px; font-size: 14px; }
+    iframe { width: 100%; height: 520px; border: none; border-radius: 12px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#welcome">Welcome</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#location">Location</a>
+    <a href="#memories">Memories</a>
+  </nav>
+
+  <div class="header">
+    <div class="monogram">SV</div>
+    <h1 class="names">Sudiksha & Vaibhav</h1>
+    <div class="hashtag">#SaveTheDate</div>
+  </div>
+
+  <div class="container">
+
+    <!-- WELCOME SECTION -->
+    <section id="welcome" class="card">
+      <h2>Welcome to Our Wedding</h2>
+      <p>We are overjoyed to share our special moments with you. Join us in celebrating our union amidst love, laughter, and lifelong memories.</p>
+      <br>
+      <p><i>Warm Regards,</i><br><strong>Patils & Shahs Family</strong></p>
+    </section>
+
+    <!-- SCHEDULE SECTION -->
+    <section id="schedule" class="card">
+      <h2>Schedule of Events</h2>
+      
+      <div class="event">
+        <div class="event-title">Rangon Ka Mela</div>
+        <p class="event-details">Mehendi & Sangeet</p>
+        <p>19th November | 4:00 PM Onwards</p>
+      </div>
+
+      <div class="event">
+        <div class="event-title">Wedding Bells</div>
+        <p class="event-details">Wedding & Reception</p>
+        <p>21st November | 10:00 AM Pheras | 7:00 PM Reception</p>
+      </div>
+    </section>
+
+    <!-- LOCATION SECTION -->
+    <section id="location" class="card">
+      <h2>Venue & Location</h2>
+      <p><strong>Mumbai</strong></p>
+      <p style="margin-top:8px;">For complete venue details and directions, please click below:</p>
+      <a href="https://share.google/QRZTry75AcZJlNxmB" target="_blank" class="btn">📍 View Map Location</a>
+    </section>
+
+    <!-- MEMORIES / UPLOADER SECTION -->
+    <section id="memories" class="card">
+      <h2>Shared Memories</h2>
+      <p>Upload your photos and videos directly to our digital wedding album!</p>
+      
+      <!-- Replace with your Apps Script Web App URL -->
+      <iframe src="YOUR_APPS_SCRIPT_WEB_APP_URL"></iframe>
+    </section>
+
+  </div>
+
+</body>
+</html>
