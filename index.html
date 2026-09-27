@@ -35,8 +35,18 @@
     .event-title { font-family: Georgia, serif; font-style: italic; font-size: 20px; color: var(--gold); margin-bottom: 4px; }
     .event-details { font-size: 14px; color: var(--text); font-weight: 500; }
 
-    .btn { display: inline-block; background: var(--primary); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 15px; font-size: 14px; }
-    iframe { width: 100%; height: 520px; border: none; border-radius: 12px; margin-top: 10px; }
+    .btn { display: inline-block; background: var(--primary); color: white; border: none; padding: 14px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 15px; font-size: 15px; cursor: pointer; width: 100%; transition: background 0.2s; }
+    .btn:disabled { background: #9EAB9A; cursor: not-allowed; }
+    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+
+    /* UPLOADER STYLES */
+    input[type="file"] { display: none; }
+    .file-label { display: block; background: #F0F3F6; padding: 16px; border-radius: 10px; cursor: pointer; border: 2px dashed #B0BEC5; margin: 15px 0; font-weight: 500; word-break: break-all; color: var(--text); }
+    .progress-bar { width: 100%; background-color: #E0E0E0; border-radius: 8px; margin-top: 15px; display: none; overflow: hidden; }
+    .progress { width: 0%; height: 10px; background-color: var(--gold); transition: width 0.3s; }
+    #status { margin-top: 15px; font-weight: 500; font-size: 14px; color: var(--text); }
+    #thankYouScreen { display: none; }
+    .icon { font-size: 40px; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -86,18 +96,125 @@
       <h2>Venue & Location</h2>
       <p><strong>Mumbai</strong></p>
       <p style="margin-top:8px;">For complete venue details and directions, please click below:</p>
-      <a href="https://share.google/QRZTry75AcZJlNxmB" target="_blank" class="btn">📍 View Map Location</a>
+      <a href="https://share.google/QRZTry75AcZJlNxmB" target="_blank" class="btn btn-outline" style="width: auto; display: inline-block;">📍 View Map Location</a>
     </section>
 
     <!-- MEMORIES / UPLOADER SECTION -->
     <section id="memories" class="card">
-      <h2>Shared Memories</h2>
-      <p>Upload your photos and videos directly to our digital wedding album!</p>
-      <a href="https://script.google.com/macros/s/AKfycbzGs_73TNS6XH7qCyDoHkYIocfyQgd-pvgSHDiuBA99LYAXSaBg5NpDqVuYjvvGS6W0tw/exec" target="_blank" class="btn">📸 Open Photo & Video Uploader</a>
-</section>
+      
+      <!-- UPLOAD FORM SCREEN -->
+      <div id="uploadScreen">
+        <h2>Shared Memories</h2>
+        <p>Select your photos & videos to send directly to our digital album!</p>
+        
+        <label for="fileField" class="file-label" id="fileLabel">📸 Choose Photos & Videos</label>
+        <input type="file" id="fileField" accept="image/*,video/*" multiple onchange="updateFileCount()">
+        
+        <button class="btn" id="uploadBtn" onclick="uploadFiles()">Upload All Files</button>
+        
+        <a href="https://drive.google.com/drive/folders/1D8FN2Et08y0jElH4eN6Cm3bQp--9-si8" target="_blank" class="btn btn-outline">🖼️ View Shared Album</a>
+
+        <div class="progress-bar" id="progressBar">
+          <div class="progress" id="progress"></div>
+        </div>
+        
+        <div id="status"></div>
+      </div>
+
+      <!-- THANK YOU SCREEN -->
+      <div id="thankYouScreen">
+        <div class="icon">✨🥂✨</div>
+        <h2>Thank You!</h2>
+        <p id="thankYouMessage">Your photos and videos have been saved to our album.</p>
+        
+        <a href="https://drive.google.com/drive/folders/1D8FN2Et08y0jElH4eN6Cm3bQp--9-si8" target="_blank" class="btn" style="display:block; text-decoration:none;">🖼️ View Shared Album</a>
+        <button class="btn btn-outline" onclick="resetForm()">Upload More Photos</button>
+      </div>
+
     </section>
 
   </div>
 
+  <script>
+    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzGs_73TNS6XH7qCyDoHkYIocfyQgd-pvgSHDiuBA99LYAXSaBg5NpDqVuYjvvGS6W0tw/exec";
+
+    function updateFileCount() {
+      const fileInput = document.getElementById('fileField');
+      const label = document.getElementById('fileLabel');
+      const count = fileInput.files.length;
+      label.innerText = count > 0 ? "Selected " + count + " file" + (count > 1 ? "s" : "") : "📸 Choose Photos & Videos";
+    }
+
+    async function uploadFiles() {
+      const fileInput = document.getElementById('fileField');
+      const statusDiv = document.getElementById('status');
+      const btn = document.getElementById('uploadBtn');
+      const progressBar = document.getElementById('progressBar');
+      const progress = document.getElementById('progress');
+      const files = fileInput.files;
+
+      if (files.length === 0) {
+        alert("Please select at least one photo or video!");
+        return;
+      }
+
+      btn.disabled = true;
+      progressBar.style.display = 'block';
+      progress.style.width = '0%';
+      let uploaded = 0;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        statusDiv.innerText = "Uploading " + (i + 1) + " of " + files.length + "...";
+
+        try {
+          const base64 = await fileToBase64(file);
+          const payload = {
+            fileName: file.name,
+            mimeType: file.type,
+            base64: base64.split(',')[1] // Strip Data-URL prefix
+          };
+
+          await fetch(scriptUrl, {
+            method: "POST",
+            mode: "no-cors", // Allows cross-origin post to Google Apps Script
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          uploaded++;
+        } catch (err) {
+          console.error(err);
+        }
+
+        const percent = Math.round(((i + 1) / files.length) * 100);
+        progress.style.width = percent + '%';
+      }
+
+      document.getElementById('uploadScreen').style.display = 'none';
+      document.getElementById('thankYouScreen').style.display = 'block';
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function resetForm() {
+      document.getElementById('fileField').value = "";
+      document.getElementById('fileLabel').innerText = "📸 Choose Photos & Videos";
+      document.getElementById('status').innerText = "";
+      document.getElementById('progressBar').style.display = 'none';
+      document.getElementById('progress').style.width = '0%';
+      document.getElementById('uploadBtn').disabled = false;
+      document.getElementById('thankYouScreen').style.display = 'none';
+      document.getElementById('uploadScreen').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
